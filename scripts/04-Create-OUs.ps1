@@ -1,17 +1,20 @@
 ﻿<#
 .SYNOPSIS
-    Crée l'arborescence d'unités d'organisation (OU) et les groupes par service.
+    Crée l'arborescence d'unités d'organisation (OU) et les groupes du laboratoire.
 .DESCRIPTION
     LAB
      ├─ Utilisateurs
-     │   ├─ Comptabilite, RH, Informatique, Direction, Commercial
-     ├─ Ordinateurs
-     └─ Groupes          (un groupe global GG_<Service> par service)
+     │   ├─ Etudiants
+     │   ├─ Enseignants
+     │   └─ Techniciens
+     ├─ Laboratoire     (postes des étudiants ; nouveaux ordinateurs joints au domaine)
+     ├─ Serveurs
+     └─ Groupes         (un groupe de sécurité global par profil : Etudiants, Enseignants, Techniciens)
 #>
 [CmdletBinding()]
 param(
     [string]  $OURacine = 'LAB',
-    [string[]]$Services = @('Comptabilite', 'RH', 'Informatique', 'Direction', 'Commercial')
+    [string[]]$Profils  = @('Etudiants', 'Enseignants', 'Techniciens')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -34,20 +37,20 @@ function New-OUSiAbsente {
 Write-Host 'Création des OU...' -ForegroundColor Cyan
 $racine  = New-OUSiAbsente -Nom $OURacine      -Parent $domainDN
 $ouUsers = New-OUSiAbsente -Nom 'Utilisateurs' -Parent $racine
-$null    = New-OUSiAbsente -Nom 'Ordinateurs'  -Parent $racine
+$ouLab   = New-OUSiAbsente -Nom 'Laboratoire'  -Parent $racine
+$null    = New-OUSiAbsente -Nom 'Serveurs'     -Parent $racine
 $ouGrp   = New-OUSiAbsente -Nom 'Groupes'      -Parent $racine
 
-foreach ($service in $Services) {
-    $null = New-OUSiAbsente -Nom $service -Parent $ouUsers
+foreach ($profil in $Profils) {
+    $null = New-OUSiAbsente -Nom $profil -Parent $ouUsers
 
-    $nomGroupe = "GG_$service"
-    if (-not (Get-ADGroup -Filter "SamAccountName -eq '$nomGroupe'" -ErrorAction SilentlyContinue)) {
-        New-ADGroup -Name $nomGroupe -SamAccountName $nomGroupe -GroupScope Global -GroupCategory Security `
-            -Path $ouGrp -Description "Membres du service $service"
-        Write-Host "  + Groupe $nomGroupe" -ForegroundColor Green
+    if (-not (Get-ADGroup -Filter "SamAccountName -eq '$profil'" -ErrorAction SilentlyContinue)) {
+        New-ADGroup -Name $profil -SamAccountName $profil -GroupScope Global -GroupCategory Security `
+            -Path $ouGrp -Description "Groupe de sécurité : $profil"
+        Write-Host "  + Groupe $profil" -ForegroundColor Green
     }
 }
 
-# Les nouveaux ordinateurs joints au domaine arrivent directement dans LAB\Ordinateurs
-redircmp "OU=Ordinateurs,$racine" | Out-Null
-Write-Host "Conteneur par défaut des ordinateurs redirigé vers OU=Ordinateurs,$racine" -ForegroundColor Cyan
+# Les postes joints au domaine arrivent directement dans l'OU Laboratoire, où s'appliquent les GPO
+redircmp $ouLab | Out-Null
+Write-Host "Conteneur par défaut des ordinateurs redirigé vers $ouLab" -ForegroundColor Cyan

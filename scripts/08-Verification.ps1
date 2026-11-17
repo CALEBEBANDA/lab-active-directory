@@ -1,11 +1,11 @@
 ﻿<#
 .SYNOPSIS
-    Contrôle rapide de l'état du lab (AD, DNS, DHCP, OU, utilisateurs, GPO).
+    Contrôle rapide de l'état du lab (AD, DNS, DHCP, OU, utilisateurs, GPO, partage).
 #>
 [CmdletBinding()]
 param([string]$OURacine = 'LAB')
 
-Import-Module ActiveDirectory, GroupPolicy, DnsServer, DhcpServer
+Import-Module ActiveDirectory, GroupPolicy, DnsServer, DhcpServer, SmbShare
 
 $domaine = Get-ADDomain
 $racine  = "OU=$OURacine,$($domaine.DistinguishedName)"
@@ -33,11 +33,20 @@ Test-Point 'Serveur DHCP autorisé dans AD'       { Get-DhcpServerInDC }
 Test-Point 'Étendue DHCP active'                  { Get-DhcpServerv4Scope | Where-Object State -eq 'Active' }
 Test-Point "OU $OURacine présente"                { Get-ADOrganizationalUnit -Identity $racine }
 Test-Point 'Utilisateurs créés dans les OU'      { Get-ADUser -Filter * -SearchBase $racine }
-Test-Point 'GPO de restriction liée'             {
-    (Get-GPInheritance -Target "OU=Utilisateurs,$racine").GpoLinks.DisplayName -contains 'GPO_Restrictions_Utilisateurs'
+Test-Point 'GPO_Restriction_Etudiants liée'     {
+    (Get-GPInheritance -Target "OU=Etudiants,OU=Utilisateurs,$racine").GpoLinks.DisplayName -contains 'GPO_Restriction_Etudiants'
+}
+Test-Point 'GPO_Restriction_Enseignants liée'   {
+    (Get-GPInheritance -Target "OU=Enseignants,OU=Utilisateurs,$racine").GpoLinks.DisplayName -contains 'GPO_Restriction_Enseignants'
+}
+Test-Point 'GPO_Bureau_A_Distance liée'         {
+    (Get-GPInheritance -Target "OU=Laboratoire,$racine").GpoLinks.DisplayName -contains 'GPO_Bureau_A_Distance'
+}
+Test-Point 'Partage Cours : Etudiants en lecture' {
+    Get-SmbShareAccess -Name 'Cours' | Where-Object { $_.AccountName -like '*\Etudiants' -and $_.AccessRight -eq 'Read' }
 }
 
-Write-Host "`nUtilisateurs par service :" -ForegroundColor Cyan
+Write-Host "`nUtilisateurs par profil :" -ForegroundColor Cyan
 Get-ADUser -Filter * -SearchBase "OU=Utilisateurs,$racine" -Properties Department |
     Group-Object Department | Sort-Object Name | Format-Table Name, Count -AutoSize
 

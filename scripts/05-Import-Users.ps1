@@ -4,8 +4,8 @@
 .DESCRIPTION
     Pour chaque ligne du CSV (Prenom;Nom;Service;Fonction;Telephone) :
     - génère un identifiant unique au format prenom.nom (sans accents, 20 car. max) ;
-    - crée le compte dans OU=<Service>,OU=Utilisateurs,OU=LAB ;
-    - l'ajoute au groupe GG_<Service> ;
+    - crée le compte dans OU=<Service>,OU=Utilisateurs,OU=LAB (Etudiants, Enseignants, Techniciens) ;
+    - l'ajoute au groupe de sécurité du même nom ;
     - impose le changement du mot de passe initial à la première connexion.
     Le mot de passe initial est demandé au lancement (jamais stocké dans le CSV).
 .EXAMPLE
@@ -69,11 +69,12 @@ foreach ($u in $utilisateurs) {
                 -Name "$prenom $nom" -DisplayName "$prenom $nom" `
                 -GivenName $prenom -Surname $nom `
                 -SamAccountName $sam -UserPrincipalName "$sam@$suffixUPN" `
-                -Department $u.Service -Title $u.Fonction -OfficePhone $u.Telephone `
+                -Department $u.Service -Title $u.Fonction `
                 -Path $ou -AccountPassword $motDePasse `
                 -ChangePasswordAtLogon $true -Enabled $true
 
-            Add-ADGroupMember -Identity "GG_$($u.Service)" -Members $sam
+            if ($u.Telephone) { Set-ADUser -Identity $sam -OfficePhone $u.Telephone }
+            Add-ADGroupMember -Identity $u.Service -Members $sam
             Write-Host "  + $sam ($($u.Service))" -ForegroundColor Green
             $bilan.Crees++
         }
