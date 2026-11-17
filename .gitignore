@@ -1,0 +1,6 @@
+# Exports générés par les scripts (peuvent contenir des données sensibles)
+*.log
+exports/
+*.tmp
+Thumbs.db
+.DS_Store
