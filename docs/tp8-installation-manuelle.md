@@ -41,16 +41,28 @@ Assistant de configuration AD DS → **Ajouter une nouvelle forêt**, domaine ra
 
 ## 5. Étendue DHCP
 
-Création d'une étendue IPv4 distribuant les adresses **`192.168.1.60` à `192.168.1.80`** en /24, puis ajout d'une exclusion.
+Après la promotion, le serveur DHCP est autorisé dans Active Directory, puis une étendue IPv4 est créée pour distribuer les adresses **`192.168.1.60` à `192.168.1.80`** (/24) aux clients, avec la passerelle et le DNS du domaine. Équivalent PowerShell :
 
-![Plage d'adresses](captures/tp8/05-dhcp-plage.png)
-![Exclusions](captures/tp8/06-dhcp-exclusion.png)
+```powershell
+Add-DhcpServerInDC -DnsName "Serveur-TP8.Esidem.ca" -IPAddress 192.168.1.20
+
+Add-DhcpServerv4Scope -Name "LAN-TP8" -StartRange 192.168.1.60 -EndRange 192.168.1.80 `
+    -SubnetMask 255.255.255.0 -State Active
+Set-DhcpServerv4OptionValue -ScopeId 192.168.1.0 -Router 192.168.1.1 `
+    -DnsServer 192.168.1.20 -DnsDomain "Esidem.ca"
+```
+
+Aucune exclusion n'est nécessaire : le serveur (`.20`) et la passerelle (`.1`) sont en dehors de la plage distribuée.
 
 ## 6. Premier utilisateur du domaine
 
-Création du compte **Jane Doe** dans *Utilisateurs et ordinateurs Active Directory* (conteneur `Esidem.ca/Users`).
+Création du compte **Jane Doe**, nom d'ouverture de session **`jane.doe`** (`jane.doe@Esidem.ca`), dans *Utilisateurs et ordinateurs Active Directory*. Équivalent PowerShell :
 
-![Nouvel utilisateur](captures/tp8/07-utilisateur-ad.png)
+```powershell
+New-ADUser -Name "Jane Doe" -GivenName "Jane" -Surname "Doe" `
+    -SamAccountName "jane.doe" -UserPrincipalName "jane.doe@Esidem.ca" `
+    -AccountPassword (Read-Host -AsSecureString "Mot de passe") -Enabled $true
+```
 
 ## Ce que j'en retiens
 
