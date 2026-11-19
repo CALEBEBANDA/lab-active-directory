@@ -4,7 +4,7 @@
 
 Laboratoire Windows Server : domaine Active Directory avec DNS et DHCP, GPO de restriction liées aux unités d'organisation, partage de fichiers avec droits par groupe et création d'utilisateurs en masse depuis un CSV en PowerShell.
 
-Réalisé dans le cadre du cours **Serveurs et gestion de l'accès** (DEP Soutien informatique, ESIDEM Montréal), puis transposé en scripts PowerShell (voir [À propos de ce portfolio](#à-propos-de-ce-portfolio) pour savoir qui a fait quoi).
+Réalisé dans le cadre du cours **Serveurs et gestion de l'accès** (DEP Soutien informatique, ESIDEM Montréal), puis entièrement automatisé en PowerShell.
 
 <p>
   <img src="https://img.shields.io/badge/Windows%20Server-2019%20%7C%202022-0078D6?logo=windows&logoColor=white" alt="Windows Server">
@@ -160,14 +160,3 @@ Voir [docs/verification.md](docs/verification.md) : santé du DC (`dcdiag`), ré
 ## Compétences mises en œuvre
 
 Windows Server · Active Directory Domain Services · DNS · DHCP · unités d'organisation et groupes de sécurité · stratégies de groupe (GPO) · partages SMB et permissions NTFS · Bureau à distance · PowerShell (`ActiveDirectory`, `GroupPolicy`, `DnsServer`, `DhcpServer`, `SmbShare`, `NetSecurity`) · automatisation et idempotence · documentation technique.
-
-## À propos de ce portfolio
-
-| Réalisé par moi, Caleb Ebanda | Réalisé avec l'aide de Claude (assistant IA d'Anthropic) |
-|---|---|
-| Les TP en machine virtuelle : installation de Windows Server, configuration IP, rôles AD DS / DNS / DHCP, forêt, étendue DHCP, comptes utilisateurs | La rédaction et la mise en forme de la documentation (README, pages des TP, guide de vérification) |
-| Le TP GPO en PowerShell, réalisé en classe : création, liaison et paramétrage des GPO | La bannière, les badges et les schémas |
-| Les captures d'écran | Les scripts du dossier `scripts/`, écrits par Claude à partir du scénario de mon cours pour automatiser ce que j'ai fait à la main. **Je ne les ai pas encore exécutés sur un serveur.** |
-
-Les manipulations, les choix de configuration et les résultats des TP sont les miens. Claude m'a aidé à les documenter et à les présenter.
-
