@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Lab Active Directory — Windows Server, DNS, DHCP, GPO, PowerShell">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A2A5E"/>
+      <stop offset="1" stop-color="#0078D6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="320" rx="16" fill="url(#bg)"/>
+  <g fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2">
+    <circle cx="1130" cy="60" r="140"/><circle cx="1130" cy="60" r="200"/><circle cx="1130" cy="60" r="260"/>
+  </g>
+  <!-- serveur -->
+  <g transform="translate(1000 78)">
+    <rect x="0" y="0" width="170" height="44" rx="8" fill="#FFFFFF" fill-opacity="0.95"/>
+    <rect x="0" y="58" width="170" height="44" rx="8" fill="#FFFFFF" fill-opacity="0.85"/>
+    <rect x="0" y="116" width="170" height="44" rx="8" fill="#FFFFFF" fill-opacity="0.75"/>
+    <g fill="#0078D6"><circle cx="24" cy="22" r="7"/><circle cx="24" cy="80" r="7"/><circle cx="24" cy="138" r="7"/></g>
+    <g fill="#0A2A5E" fill-opacity="0.35"><rect x="96" y="17" width="56" height="10" rx="5"/><rect x="96" y="75" width="56" height="10" rx="5"/><rect x="96" y="133" width="56" height="10" rx="5"/></g>
+  </g>
+  <text x="64" y="128" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#FFFFFF">Lab Active Directory</text>
+  <text x="64" y="180" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="28" fill="#DCEBFA">Windows Server · DNS · DHCP · GPO · Partages · PowerShell</text>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" font-weight="600">
+    <rect x="64" y="216" width="230" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.15"/>
+    <text x="179" y="242" text-anchor="middle" fill="#FFFFFF">Installation manuelle</text>
+    <rect x="308" y="216" width="180" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.15"/>
+    <text x="398" y="242" text-anchor="middle" fill="#FFFFFF">GPO PowerShell</text>
+    <rect x="502" y="216" width="230" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.15"/>
+    <text x="617" y="242" text-anchor="middle" fill="#FFFFFF">Lab 100 % automatisé</text>
+  </g>
+</svg>
