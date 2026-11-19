@@ -2,7 +2,7 @@
 
 Suite du TP 8.1, sur les mêmes machines virtuelles (contrôleur de domaine Windows Server + client Windows 10/11 joint au domaine). Objectif : créer, lier et configurer des stratégies de groupe **uniquement en ligne de commande** avec le module `GroupPolicy`.
 
-> Les chemins ci-dessous utilisent la structure du lab (`OU=…,OU=Utilisateurs,OU=LAB,DC=lab,DC=local`). Adaptez la partie `DC=` à votre domaine.
+> Les captures ont été réalisées en classe sur la machine virtuelle de laboratoire commune (domaine `Gabriel.ca`, OU `ETUDIANTS`). Les commandes écrites ci-dessous reprennent la structure du lab automatisé (`OU=…,OU=Utilisateurs,OU=LAB,DC=lab,DC=local`) : adaptez la partie `DC=` à votre domaine.
 
 ## 1. Créer les GPO
 
@@ -13,12 +13,17 @@ New-GPO -Name "GPO_Restriction_Enseignants"
 
 `New-GPO` renvoie l'objet créé : `UserVersion` et `ComputerVersion` sont à `0`, la GPO est encore vide.
 
+![New-GPO GPO_Restriction_Etudiants](captures/tp-gpo/01-new-gpo-etudiants.png)
+![New-GPO GPO_Restriction_Enseignants](captures/tp-gpo/02-new-gpo-enseignants.png)
+
 ## 2. Lier chaque GPO à la bonne OU
 
 ```powershell
 New-GPLink -Name "GPO_Restriction_Etudiants"   -Target "OU=Etudiants,OU=Utilisateurs,OU=LAB,DC=lab,DC=local"
 New-GPLink -Name "GPO_Restriction_Enseignants" -Target "OU=Enseignants,OU=Utilisateurs,OU=LAB,DC=lab,DC=local"
 ```
+
+![New-GPLink vers l'OU ETUDIANTS](captures/tp-gpo/03-new-gplink-etudiants.png)
 
 Points d'attention :
 - `-Target` attend le **nom distinctif (DN) exact** de l'OU, avec `DC=` pour chaque partie du domaine. Une faute dans le DN donne une erreur « objet introuvable ».
@@ -38,6 +43,8 @@ foreach ($gpo in "GPO_Restriction_Etudiants", "GPO_Restriction_Enseignants") {
 ```
 
 Après cette commande, `Get-GPO -Name "GPO_Restriction_Etudiants"` montre `UserVersion : Version AD : 1, Version SysVol : 1` : la partie Utilisateur a bien été modifiée et répliquée dans SYSVOL.
+
+![GPO après ajout du paramètre](captures/tp-gpo/04-gpo-apres-panneau-configuration.png)
 
 ## 4. Tester sur le client Windows 10/11
 
